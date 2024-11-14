@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import s from "./SearchBar.module.css";
 import { MdSearch } from "react-icons/md";
 
