@@ -20,6 +20,7 @@
     background-color: transparent;
     border: none;
     min-width: 200px;
+    outline: none;
 }
 
 .btn{
