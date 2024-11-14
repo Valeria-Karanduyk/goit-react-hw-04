@@ -17,8 +17,8 @@ const SearchBar = ({ handleQuery }) => {
         <input
           className={s.inputText}
           type="text"
-          autocomplete="off"
-          autofocus
+          autoComplete="off"
+          autoFocus
           placeholder="Search images and photos"
           name="query"
         />

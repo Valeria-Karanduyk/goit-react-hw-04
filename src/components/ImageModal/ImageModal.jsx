@@ -1,49 +1,38 @@
-import React from "react";
+import s from "./ImageModal.module.css";
 import Modal from "react-modal";
+import { FaRegHeart, FaWindowClose } from "react-icons/fa";
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
+const ImageModal = ({
+  isOpen,
+  onClose,
+  selectedImage: { urls, alt_description, description, likes },
+}) => {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      overlayClassName={s.overlay}
+      className={s.content}
+      ariaHideApp={false}
+      closeTimeoutMS={200}
+      contentLabel={description}
+      bodyOpenClassName={s.reactModal}
+    >
+      <button onClick={onClose} className={s.btn}>
+        <FaWindowClose className={s.icon} />
+      </button>
+      {likes ? (
+        <p className={s.likes}>
+          <FaRegHeart className={s.iconLikes} />
+          {likes}
+        </p>
+      ) : (
+        ""
+      )}
+      <img src={urls?.regular} alt={alt_description} className={s.img} />
+      {description ? <p className={s.description}>{description}</p> : ""}
+    </Modal>
+  );
 };
 
-export default function ImageModal() {
-  let subtitle;
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  return (
-    <div>
-      <button onClick={openModal}>Open Modal</button>
-      <Modal
-        isOpen={isOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <button onClick={closeModal}>x</button>
-        <div>Modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
-      </Modal>
-    </div>
-  );
-}
+export default ImageModal;
