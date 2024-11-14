@@ -1,0 +1,19 @@
+.btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    width: 160px;
+    height: 48px;
+    background-color: #3350e9;
+    margin: 0 auto;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #fbfbfb;
+    font-size: 16px;
+}
+
+.btn:hover {
+background-color: #1f3cd4;
+}

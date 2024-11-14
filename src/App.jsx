@@ -7,14 +7,12 @@ import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import ImageModal from "./components/ImageModal/ImageModal";
 
-function App() {
-  const queryObj = {
-    topic: "",
-    per_page: 10,
-    page: 1,
-    pagination: false,
-  };
-  const [query, setQuery] = useState(queryObj);
+const App = () => {
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [query, setQuery] = useState("");
+  const [perPage, setPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+  const [pagination, setPagination] = useState(false);
   const [totalPage, setTotalPages] = useState(0);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState({
@@ -22,18 +20,47 @@ function App() {
     errCode: "",
     errMsg: "",
   });
-  const [results, setResults] = useState(["FIRST-LOAD"]);
+  const [results, setResults] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState({});
+
+  const handleQuery = (query, perPage) => {
+    if (perPage !== "") setPerPage(perPage);
+    setFirstLoad(true);
+    setQuery(query);
+    setPagination(false);
+    setPage(1);
+    return;
+  };
+
+  const handleLoadMore = () => {
+    setPage(page + 1);
+    setPagination(true);
+    return;
+  };
+
+  const handleModal = (imageData) => {
+    setSelectedImage(imageData);
+    toggleIsOpen();
+    return;
+  };
+
+  const toggleIsOpen = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
   useEffect(() => {
-    if (!query.topic) return;
+    if (!query) return;
     (async () => {
       try {
-        if (!query.pagination) setResults(["FIRST-LOAD"]);
-        setError({ isActive: false, errCode: "", errMsg: "" });
         setLoader(true);
-        const data = await fetchImg(query.topic, query.per_page, query.page);
-        if (query.pagination) {
-          return setResults((prev) => [...prev, ...data.results]);
+        setError({ isActive: false, errCode: "", errMsg: "" });
+        setTotalPages(0);
+        const data = await fetchImg(query, perPage, page);
+        if (pagination) {
+          setResults((prev) => [...prev, ...data.results]);
+          setTotalPages(data.total_pages);
+          return;
         }
         setTotalPages(data.total_pages);
         setResults(data.results);
@@ -41,39 +68,37 @@ function App() {
         setError({
           isActive: true,
           errCode: err.status,
-          errMsg: err.response.data.errors.join(", "),
+          errMsg: err?.response.data.errors.join(", "),
         });
       } finally {
         setLoader(false);
+        setFirstLoad(false);
       }
     })();
-  }, [query]);
-  const [modal, setModal] = useState(false);
-  const handleModal = (url, alt, description, likes) => {};
+  }, [query, page, pagination, perPage]);
+
   return (
     <>
-      <SearchBar setQuery={setQuery} query={query} id="gallery" />
-      {results[0] === "FIRST-LOAD" ? (
+      <SearchBar handleQuery={handleQuery} query={query} id="gallery" />
+      {firstLoad ? (
         ""
       ) : results.length > 0 ? (
         <ImageGallery data={results} handleModal={handleModal} />
       ) : (
         <h2>Images not found...</h2>
       )}
-      {error.isActive ? (
+      {error.isActive && (
         <ErrorMessage code={error.errCode} message={error.errMsg} />
-      ) : (
-        ""
       )}
-      {loader ? <Loader /> : ""}
-      <LoadMoreBtn
-        setQuery={setQuery}
-        totalPage={totalPage}
-        page={query.page}
+      {loader && <Loader />}
+      {page < totalPage && <LoadMoreBtn handleLoadMore={handleLoadMore} />}
+      <ImageModal
+        isOpen={isModalOpen}
+        onClose={toggleIsOpen}
+        selectedImage={selectedImage}
       />
-      <ImageModal handleModal={handleModal} />
     </>
   );
-}
+};
 
 export default App;
