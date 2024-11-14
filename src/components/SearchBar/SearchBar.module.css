@@ -1,0 +1,39 @@
+.header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 25px 0;
+}
+
+.form{
+    padding: 0 10px;
+        display: flex;
+        min-height: 44px;
+        border: 1px solid transparent;
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+}
+
+.inputText{
+    background-color: transparent;
+    border: none;
+    min-width: 200px;
+}
+
+.btn{
+    padding: 0 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        fill: #007DFF;
+        transition: transform 200ms ease-in-out, fill 200ms ease-in-out;
+    
+        &:hover,
+            :focus {
+                fill: #3350e9;
+            }
+}
